@@ -1,0 +1,65 @@
+name: Build ODROID-C1 RT Armbian
+
+on:
+  # 允许在网页端手动触发构建并选择参数
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Armbian Kernel Branch'
+        required: true
+        default: 'current'
+        type: choice
+        options: ['current', 'edge', 'legacy']
+      release:
+        description: 'Debian/Ubuntu Release'
+        required: true
+        default: 'bookworm'
+        type: choice
+        options: ['bookworm', 'bullseye', 'noble', 'jammy']
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360  # 最大6小时，防止无限挂起
+
+    steps:
+      - name: Checkout Armbian Build Framework
+        uses: actions/checkout@v4
+        with:
+          repository: armbian/build
+          fetch-depth: 0  # 必须完整克隆，否则 git describe 失败
+
+      - name: Free Disk Space (Critical!)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - name: Build ODROID-C1 RT Image
+        run: |
+          ./compile.sh build \
+            BOARD=odroidc1 \
+            BRANCH=${{ github.event.inputs.branch }} \
+            RELEASE=${{ github.event.inputs.release }} \
+            BUILD_MINIMAL=yes \
+            BUILD_DESKTOP=no \
+            KERNEL_CONFIGURE=no \
+            EXPERT=yes \
+            USE_CCACHE=yes \
+            DOWNLOAD_MIRROR=china \
+            COMPRESS_OUTPUTIMAGE=sha,gpg,img \
+            KERNEL_EXTRA_CONFIG="CONFIG_PREEMPT_RT=y CONFIG_PREEMPT=y"
+
+      - name: Upload Built Image
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Armbian-ODROID-C1-RT-${{ github.event.inputs.branch }}-${{ github.event.inputs.release }}
+          path: output/images/*.img*
+          retention-days: 7
+          compression-level: 0  # img已是压缩格式，避免二次压缩浪费时间
