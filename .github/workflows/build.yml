@@ -58,6 +58,7 @@ jobs:
             RELEASE=bookworm \
             BUILD_MINIMAL=yes \
             KERNEL_EXTRA_CONFIG="CONFIG_PREEMPT_RT=y" \
+            KERNEL_CONFIGURE=no \
             DOWNLOAD_MIRROR=china \
             USE_CCACHE=yes
 
