@@ -51,8 +51,8 @@ jobs:
       - name: Build ODROID-C1 RT Image
         run: |
           ./compile.sh build \
-            DOCKER_CONTAINER_RUNNER=docker \  # 强制使用 docker
-            DOCKER_CONTAINER_NAME=armbian-build \ # 避免容器名冲突
+            DOCKER_CONTAINER_RUNNER=docker \
+            DOCKER_CONTAINER_NAME=armbian-build \
             BOARD=odroidc1 \
             BRANCH=current \
             RELEASE=bookworm \
