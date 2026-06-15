@@ -40,20 +40,26 @@ jobs:
           docker-images: true
           swap-storage: true
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: armhf  # 明确指定需要支持 armhf
+
       - name: Build ODROID-C1 RT Image
         run: |
           ./compile.sh build \
+            DOCKER_CONTAINER_RUNNER=docker \  # 强制使用 docker
+            DOCKER_CONTAINER_NAME=armbian-build \ # 避免容器名冲突
             BOARD=odroidc1 \
-            BRANCH=${{ github.event.inputs.branch }} \
-            RELEASE=${{ github.event.inputs.release }} \
+            BRANCH=current \
+            RELEASE=bookworm \
             BUILD_MINIMAL=yes \
-            BUILD_DESKTOP=no \
-            KERNEL_CONFIGURE=no \
-            EXPERT=yes \
-            USE_CCACHE=yes \
+            KERNEL_EXTRA_CONFIG="CONFIG_PREEMPT_RT=y" \
             DOWNLOAD_MIRROR=china \
-            COMPRESS_OUTPUTIMAGE=sha,gpg,img \
-            KERNEL_EXTRA_CONFIG="CONFIG_PREEMPT_RT=y CONFIG_PREEMPT=y"
+            USE_CCACHE=yes
 
       - name: Upload Built Image
         if: success()
