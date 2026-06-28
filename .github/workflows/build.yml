@@ -19,7 +19,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04-arm.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 360  # 最大6小时，防止无限挂起
 
     steps:
