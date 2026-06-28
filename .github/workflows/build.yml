@@ -44,8 +44,8 @@ jobs:
       #  uses: docker/setup-buildx-action@v3
 
       - name: Set up QEMU
-       uses: docker/setup-qemu-action@v3
-       with:
+        uses: docker/setup-qemu-action@v3
+        with:
             platforms: armhf  # 明确指定需要支持 armhf
 
       - name: Build ODROID-C1 RT Image
