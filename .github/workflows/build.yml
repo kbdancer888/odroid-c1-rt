@@ -19,7 +19,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04-arm.04
     timeout-minutes: 360  # 最大6小时，防止无限挂起
 
     steps:
@@ -40,19 +40,17 @@ jobs:
           docker-images: true
           swap-storage: true
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+     # - name: Set up Docker Buildx
+      #  uses: docker/setup-buildx-action@v3
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: armhf  # 明确指定需要支持 armhf
+     # - name: Set up QEMU
+     #   uses: docker/setup-qemu-action@v3
+      #  with:
+       #   platforms: armhf  # 明确指定需要支持 armhf
 
       - name: Build ODROID-C1 RT Image
         run: |
           ./compile.sh build \
-            DOCKER_CONTAINER_RUNNER=docker \
-            DOCKER_CONTAINER_NAME=armbian-build \
             BOARD=odroidc1 \
             BRANCH=current \
             RELEASE=trixie \
