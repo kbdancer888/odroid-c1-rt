@@ -13,9 +13,9 @@ on:
       release:
         description: 'Debian/Ubuntu Release'
         required: true
-        default: 'bookworm'
+        default: 'trixie'
         type: choice
-        options: ['bookworm', 'bullseye', 'noble', 'jammy']
+        options: ['trixie', 'bullseye', 'noble', 'jammy']
 
 jobs:
   build:
@@ -55,7 +55,8 @@ jobs:
             DOCKER_CONTAINER_NAME=armbian-build \
             BOARD=odroidc1 \
             BRANCH=current \
-            RELEASE=bookworm \
+            RELEASE=trixie \
+            BUILD_DESKTOP=no \
             BUILD_MINIMAL=yes \
             KERNEL_EXTRA_CONFIG="CONFIG_PREEMPT_RT=y" \
             KERNEL_CONFIGURE=no \
